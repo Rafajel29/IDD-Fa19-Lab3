@@ -102,7 +102,7 @@ The following is the graph of resistance vs force of the FSR
 
 **c. Can you change the LED fading code values so that you get the full range of output voltages from the LED when using your FSR?**
 
-Changing the line of code ```LEDbrightness = map(fsrReading, 0, 1023, 0, 255);``` to ```LEDbrightness = map(fsrReading, 0, 1000, 0, 255);``` this will allow for all 255 values of the LED intensitiy to be reached.
+Changing the line of code ```LEDbrightness = map(fsrReading, 0, 1023, 0, 255);``` to ```LEDbrightness = map(fsrReading, 0, 1000, 0, 255);``` this will allow for all 256 values of the LED intensitiy to be reached.
 
 **d. What resistance do you need to have in series to get a reasonable range of voltages from each sensor?**
 
