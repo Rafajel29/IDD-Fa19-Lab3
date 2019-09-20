@@ -18,10 +18,69 @@ For this lab, we will be experimenting with a variety of sensors, sending the da
 
 10 bits
 
-
 ## Part B. RGB LED
 
-**How might you use this with only the parts in your kit? Show us your solution.**
+I used the FSR to control the color of the RGB LED by varying the color depending on how hard you press the FSR.
+
+The following is the code used:
+'''
+int redPin = 11;
+int greenPin = 10;
+int bluePin = 9;
+ 
+//uncomment this line if using a Common Anode LED
+//#define COMMON_ANODE
+
+int redC = 0;
+int redG = 0;
+int redB = 0;
+int fsrAnalogPin = 0; // FSR is connected to analog 0
+int fsrReading;      // the analog reading from the FSR resistor divider
+int LEDbrightness;
+ 
+void setup()
+{
+  Serial.begin(9600);
+  pinMode(redPin, OUTPUT);
+  pinMode(greenPin, OUTPUT);
+  pinMode(bluePin, OUTPUT);  
+}
+ 
+void loop()
+{
+  fsrReading = analogRead(fsrAnalogPin);
+  Serial.print("Analog reading = ");
+  Serial.println(fsrReading);
+  LEDbrightness = map(fsrReading, 0, 1023, 0, 765);
+  if (LEDbrightness <= 255){
+    setColor(LEDbrightness, 0, 0);
+  }
+  if ((LEDbrightness > 255) || (LEDbrightness <= 510)){
+    redC = 510 - LEDbrightness;
+    redG = LEDbrightness - 255;
+    setColor(redC, redG, 0);
+  }
+  if ((LEDbrightness > 510) || (LEDbrightness <= 765)){
+    redG = 765 - LEDbrightness;
+    redB = LEDbrightness - 510;
+    setColor(0, redG, redB);
+  }
+
+}
+ 
+void setColor(int red, int green, int blue)
+{
+  #ifdef COMMON_ANODE
+    red = red - 255;
+    green = green - 255;
+    blue = blue - 255;
+  #endif
+  analogWrite(redPin, red);
+  analogWrite(greenPin, green);
+  analogWrite(bluePin, blue);  
+}
+'''
+
 
 ## Part C. Voltage Varying Sensors 
  
