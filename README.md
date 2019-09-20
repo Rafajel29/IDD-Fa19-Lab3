@@ -23,7 +23,7 @@ For this lab, we will be experimenting with a variety of sensors, sending the da
 I used the FSR to control the color of the RGB LED by varying the color depending on how hard you press the FSR.
 
 The following is a link to the youtube video:
-![](https://youtu.be/oulqR6I8oBw)
+https://youtu.be/oulqR6I8oBw
 
 The following is the code used:
 ```
