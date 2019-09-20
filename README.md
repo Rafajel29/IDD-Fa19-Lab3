@@ -22,8 +22,11 @@ For this lab, we will be experimenting with a variety of sensors, sending the da
 
 I used the FSR to control the color of the RGB LED by varying the color depending on how hard you press the FSR.
 
+The following is a link to the youtube video:
+![](https://youtu.be/oulqR6I8oBw)
+
 The following is the code used:
-'''
+```
 int redPin = 11;
 int greenPin = 10;
 int bluePin = 9;
@@ -79,7 +82,7 @@ void setColor(int red, int green, int blue)
   analogWrite(greenPin, green);
   analogWrite(bluePin, blue);  
 }
-'''
+```
 
 
 ## Part C. Voltage Varying Sensors 
