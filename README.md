@@ -91,7 +91,11 @@ void setColor(int red, int green, int blue)
 
 **a. What voltage values do you see from your force sensor?**
 
+I got between 0 - 1002 which correlates to 0V - 4.89736V
+
 **b. What kind of relationship does the voltage have as a function of the force applied? (e.g., linear?)**
+
+It's an almot linear relationship except at low force values where a small amount of force reduces the resistance greatly
 
 **c. Can you change the LED fading code values so that you get the full range of output voltages from the LED when using your FSR?**
 
