@@ -106,6 +106,10 @@ Changing the line of code ```LEDbrightness = map(fsrReading, 0, 1023, 0, 255);``
 
 **d. What resistance do you need to have in series to get a reasonable range of voltages from each sensor?**
 
+For the softpot reistor I put a 10k ohm resistor in series between power and the one side leg pin of the resistor and I also put a 10k ohm resistor between ground and the other side leg of the softpot resistor. I did this as it was what was recommended by the datasheet. With this I got voltages between 1.8V - 3.2V.
+
+
+
 **e. What kind of relationship does the resistance have as a function of stimulus? (e.g., linear?)**
 
 ### 2. Accelerometer
