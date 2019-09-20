@@ -95,7 +95,9 @@ I got between 0 - 1002 which correlates to 0V - 4.89736V
 
 **b. What kind of relationship does the voltage have as a function of the force applied? (e.g., linear?)**
 
-It's an almot linear relationship except at low force values where a small amount of force reduces the resistance greatly.
+It's an almot linear relationship except at low force values where a small amount of force reduces the resistance greatly. As resistance decreases the voltage will increase.
+
+The following is the graph of resistance vs force of the FSR
 ![](Images/graphFSR.PNG)
 
 
