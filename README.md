@@ -94,7 +94,7 @@ I got between 0 - 1002 which correlates to 0V - 4.89736V
 
 **b. What kind of relationship does the voltage have as a function of the force applied? (e.g., linear?)**
 
-It's an almot linear relationship except at low force values where a small amount of force reduces the resistance greatly. As resistance decreases the voltage will increase.
+It's an almot linear relationship except at low force values where a small amount of force reduces the resistance greatly. As resistance decreases the voltage will increase. Thus there is a linear relationship between force and voltage as, as the force increases so does the voltage.
 
 The following is the graph of resistance vs force of the FSR
 ![](Images/graphFSR.PNG)
@@ -108,9 +108,14 @@ Changing the line of code ```LEDbrightness = map(fsrReading, 0, 1023, 0, 255);``
 
 For the softpot reistor I put a 10k ohm resistor in series between power and the one side leg pin of the resistor and I also put a 10k ohm resistor between ground and the other side leg of the softpot resistor. I did this as it was what was recommended by the datasheet. With this I got voltages between 1.8V - 3.2V.
 
+For the photo cell I put a 10k ohm resistor paralel with the analog input pin and the one leg of the photo cell. The other leg of the photo cell was connected to 5V. With the lights off I got voltages as low as 0.0879V and by shinning a torch on the resistor I got voltage readings as high as 4.8387V.
+
 
 
 **e. What kind of relationship does the resistance have as a function of stimulus? (e.g., linear?)**
+
+There is an Inverse correlation between stimulus and resistance. As the stimulus such as light on photo cell increases so does the resistance decrease.
+
 
 ### 2. Accelerometer
  
