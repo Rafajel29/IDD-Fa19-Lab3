@@ -249,7 +249,7 @@ The Atmega328P has 1024 bytes of EEPROM memory and thus you will be able to save
 
 For analog pins we get 10 bit data that needs to be converted to 8 bit data so that it can be saved in the EEPROM. We can acomplish this by mapping the 10 bit value 0-1023 to an 8 bit value 0-255. The new 8 bit value might not be precisly as accurate as the 10 bit value as some information is lost but it is the best possible way. The 8 bit value can later be recovered from memory and inflated to a number between 0-1023 again and will be within a few numbers of the correct original number. The other way is braek up the 10 bit number and save it as 4, 8-bit values that can be summed together to create the original 10 bit number
 
-
+For I2C we do not have the format of the data we will recieve. Because of the varying possible formats of data we will recieve each case will have to be evaluated individually. Then it wll have to be decided if the recieved data can be saved as is or need to be converted to 8-bit data using the map function or if the recieved value will have to be stored acros multiple 8-bit values.
 
 **e. Alternately, how would we store the data if it were bigger than a byte? (hint: take a look at the [EEPROMPut](https://www.arduino.cc/en/Reference/EEPROMPut) example)**
 
