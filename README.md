@@ -235,9 +235,15 @@ void setColor(int red, int green, int blue)
 
 **a. Does it matter what actions are assigned to which state? Why?**
 
+Yes, the clear state need to be on one of the sides with the reading and writing states next to each other. If the the clear state was in the middle it would be impossible to read a value from EEPROM after storing it considering that it would be cleared first if you tried going from the write to rad state.
+
 **b. Why is the code here all in the setup() functions and not in the loop() functions?**
 
+Because when ever we change the state we only want the states main code to execute once and not repeatadly while the  device remains in that state. For example when entering the reading state we only want to read the data stored once the same with the write state we only want to save once when we enter the state.
+
 **c. How many byte-sized data samples can you store on the Atmega328?**
+
+The Atmega328P has 1024 bytes of EEPROM memory and thus you will be able to save up to 1024 byte-sized data samples on it.
 
 **d. How would you get analog data from the Arduino analog pins to be byte-sized? How about analog data from the I2C devices?**
 
