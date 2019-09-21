@@ -102,7 +102,7 @@ The following is the graph of resistance vs force of the FSR
 
 **c. Can you change the LED fading code values so that you get the full range of output voltages from the LED when using your FSR?**
 
-Changing the line of code ```LEDbrightness = map(fsrReading, 0, 1023, 0, 255);``` to ```LEDbrightness = map(fsrReading, 0, 1000, 0, 255);``` this will allow for all 256 values of the LED intensitiy to be reached.
+Changing the line of code ```LEDbrightness = map(fsrReading, 0, 1023, 0, 255);``` to ```LEDbrightness = map(fsrReading, 0, 1000, 0, 255);``` this will allow for all 256 values of the LED intensitiy to be reached. By mapping the achievable values to the range 0 - 255 we can achieve the full range of values.
 
 **d. What resistance do you need to have in series to get a reasonable range of voltages from each sensor?**
 
@@ -110,12 +110,12 @@ For the softpot reistor I put a 10k ohm resistor in series between power and the
 
 For the photo cell I put a 10k ohm resistor paralel with the analog input pin and the one leg of the photo cell. The other leg of the photo cell was connected to 5V. With the lights off I got voltages as low as 0.0879V and by shinning a torch on the resistor I got voltage readings as high as 4.8387V.
 
+The Flex sensor is similiar to the FSR and thus we will also make use of a 10k ohm resistor in series.
 
 
 **e. What kind of relationship does the resistance have as a function of stimulus? (e.g., linear?)**
 
-There is an Inverse correlation between stimulus and resistance. As the stimulus such as light on photo cell increases so does the resistance decrease.
-
+For the Flex sensor it is lineear with the bent angle and for softpot it is linear with the touch position. The photo cell has a Logarithmic relationship between the illumination and the reistance.
 
 ### 2. Accelerometer
  
@@ -224,12 +224,6 @@ void setColor(int red, int green, int blue)
   analogWrite(bluePin, blue);  
 }
 ```
-
-### 3. IR Proximity Sensor
-
-**a. Describe the voltage change over the sensing range of the sensor. A sketch of voltage vs. distance would work also. Does it match up with what you expect from the datasheet?**
-
-**b. Upload your merged code to your lab report repository and link to it here.**
 
 ## Optional. Graphic Display
 
