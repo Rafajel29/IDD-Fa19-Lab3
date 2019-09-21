@@ -253,6 +253,8 @@ For I2C we do not have the format of the data we will recieve. Because of the va
 
 **e. Alternately, how would we store the data if it were bigger than a byte? (hint: take a look at the [EEPROMPut](https://www.arduino.cc/en/Reference/EEPROMPut) example)**
 
+You could use the put() function to save data across multiple data-bytes. 
+
 **Upload your modified code that takes in analog values from your sensors and prints them back out to the Arduino Serial Monitor.**
 
 ### 2. Design your logger
