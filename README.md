@@ -269,7 +269,7 @@ The following is a picture of my completed state diagram
 **a. Record and upload a short demo video of your logger in action.**
 
 The following is a link to a video of my data logger working:
-
+https://youtu.be/fjFXIrcaC1w
 
 My data logger is a data logger for delivery trucks. The logger has 5 states and operates as a finite state machine meaning it is always in one of these states. The first is an idle state this is when the truck is started but not moving from this you could go to either the moving state which means the truck is moving or to the delivery door open state which means the back door of the truck is open and deliveries is being made. From one of these states it is also possible to enter a hazardous state which is when the truck is moving, and the delivery door is open. The final state is the state in which the manager can recall and look at the logged data as well as clear the data. The program starts if the truck is started loading the respective times from the EEPROM memory. The program then adds the time spent in each state as the truck is running the program saves the new times to the EEPROM every time there is a state change. When the truck gets back to the depo the manager can recall the data seeing how long the driver was busy with what and if there was a large amount of unaccounted for idle time or if there was time that the truck was in the hazardous state. The manager can then clear the datalogger in preparation for the next trip of the truck.
 
