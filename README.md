@@ -94,7 +94,7 @@ I got between 0 - 1002 which correlates to 0V - 4.89736V
 
 **b. What kind of relationship does the voltage have as a function of the force applied? (e.g., linear?)**
 
-It's an almot linear relationship except at low force values where a small amount of force reduces the resistance greatly. As resistance decreases the voltage will increase. Thus there is a linear relationship between force and voltage as, as the force increases so does the voltage.
+It's an almost linear relationship except at low force values where a small amount of force reduces the resistance greatly. As resistance decreases the voltage will increase. Thus, there is a linear relationship between force and voltage as, as the force increases so does the voltage.
 
 The following is the graph of resistance vs force of the FSR
 ![](Images/graphFSR.PNG)
@@ -102,20 +102,20 @@ The following is the graph of resistance vs force of the FSR
 
 **c. Can you change the LED fading code values so that you get the full range of output voltages from the LED when using your FSR?**
 
-Changing the line of code ```LEDbrightness = map(fsrReading, 0, 1023, 0, 255);``` to ```LEDbrightness = map(fsrReading, 0, 1000, 0, 255);``` this will allow for all 256 values of the LED intensitiy to be reached. By mapping the achievable values to the range 0 - 255 we can achieve the full range of values.
+Changing the line of code ```LEDbrightness = map(fsrReading, 0, 1023, 0, 255);``` to ```LEDbrightness = map(fsrReading, 0, 1000, 0, 255);``` this will allow for all 256 values of the LED intensity to be reached. By mapping the achievable values to the range 0 - 255 we can achieve the full range of values.
 
 **d. What resistance do you need to have in series to get a reasonable range of voltages from each sensor?**
 
-For the softpot reistor I put a 10k ohm resistor in series between power and the one side leg pin of the resistor and I also put a 10k ohm resistor between ground and the other side leg of the softpot resistor. I did this as it was what was recommended by the datasheet. With this I got voltages between 1.8V - 3.2V.
+For the softpot resistor I put a 10k ohm resistor in series between power and the one side leg pin of the resistor and I also put a 10k ohm resistor between ground and the other side leg of the softpot resistor. I did this as it was what was recommended by the datasheet. With this I got voltages between 1.8V - 3.2V.
 
-For the photo cell I put a 10k ohm resistor paralel with the analog input pin and the one leg of the photo cell. The other leg of the photo cell was connected to 5V. With the lights off I got voltages as low as 0.0879V and by shinning a torch on the resistor I got voltage readings as high as 4.8387V.
+For the photocell I put a 10k ohm resistor parallel with the analog input pin and the one leg of the photocell. The other leg of the photocell was connected to 5V. With the lights off I got voltages as low as 0.0879V and by shinning a torch on the resistor I got voltage readings as high as 4.8387V.
 
-The Flex sensor is similiar to the FSR and thus we will also make use of a 10k ohm resistor in series.
+The Flex sensor is like the FSR and thus we will also make use of a 10k ohm resistor in series.
 
 
 **e. What kind of relationship does the resistance have as a function of stimulus? (e.g., linear?)**
 
-For the Flex sensor it is lineear with the bent angle and for softpot it is linear with the touch position. The photo cell has a Logarithmic relationship between the illumination and the reistance.
+For the Flex sensor it is linear with the bent angle and for softpot it is linear with the touch position. The photocell has a Logarithmic relationship between the illumination and the resistance.
 
 ### 2. Accelerometer
  
@@ -235,11 +235,11 @@ void setColor(int red, int green, int blue)
 
 **a. Does it matter what actions are assigned to which state? Why?**
 
-Yes, the clear state need to be on one of the sides with the reading and writing states next to each other. If the the clear state was in the middle it would be impossible to read a value from EEPROM after storing it considering that it would be cleared first if you tried going from the write to rad state.
+Yes, the clear state needs to be on one of the sides with the reading and writing states next to each other. If the clear state was in the middle it would be impossible to read a value from EEPROM after storing it considering that it would be cleared first if you tried going from the write to rad state.
 
 **b. Why is the code here all in the setup() functions and not in the loop() functions?**
 
-Because when ever we change the state we only want the states main code to execute once and not repeatadly while the  device remains in that state. For example when entering the reading state we only want to read the data stored once the same with the write state we only want to save once when we enter the state.
+Because whenever we change the state, we only want the state’s main code to execute once and not repeatedly while the device remains in that state. For example, when entering the reading state, we only want to read the data stored once the same with the write state we only want to save once when we enter the state.
 
 **c. How many byte-sized data samples can you store on the Atmega328?**
 
@@ -247,13 +247,13 @@ The Atmega328P has 1024 bytes of EEPROM memory and thus you will be able to save
 
 **d. How would you get analog data from the Arduino analog pins to be byte-sized? How about analog data from the I2C devices?**
 
-For analog pins we get 10 bit data that needs to be converted to 8 bit data so that it can be saved in the EEPROM. We can acomplish this by mapping the 10 bit value 0-1023 to an 8 bit value 0-255. The new 8 bit value might not be precisly as accurate as the 10 bit value as some information is lost but it is the best possible way. The 8 bit value can later be recovered from memory and inflated to a number between 0-1023 again and will be within a few numbers of the correct original number. The other way is braek up the 10 bit number and save it as 4, 8-bit values that can be summed together to create the original 10 bit number
+For analog pins we get 10-bit data that needs to be converted to 8-bit data so that it can be saved in the EEPROM. We can accomplish this by mapping the 10-bit value 0-1023 to an 8-bit value 0-255. The new 8-bit value might not be precisely as accurate as the 10-bit value as some information is lost but it is the best possible way. The 8-bit value can later be recovered from memory and inflated to a number between 0-1023 again and will be within a few numbers of the correct original number. The other way is break up the 10-bit number and save it as 4, 8-bit values that can be summed together to create the original 10-bit number.
 
-For I2C we do not have the format of the data we will recieve. Because of the varying possible formats of data we will recieve each case will have to be evaluated individually. Then it wll have to be decided if the recieved data can be saved as is or need to be converted to 8-bit data using the map function or if the recieved value will have to be stored acros multiple 8-bit values.
+For I2C we do not have the format of the data we will receive. Because of the varying possible formats of data, we will receive each case will have to be evaluated individually. Then it will have to be decided if the received data can be saved as is or need to be converted to 8-bit data using the map function or if the received value will have to be stored across multiple 8-bit values.
 
 **e. Alternately, how would we store the data if it were bigger than a byte? (hint: take a look at the [EEPROMPut](https://www.arduino.cc/en/Reference/EEPROMPut) example)**
 
-By braeking the data up into byte sized data. For example an int could be 2 or 4 bytes with long int being 8 bytes. Since we know this it is possible to break up an int into 2 or 4 bytes these can then be accuratly stored in the EEPROM in 2 or 4 memory addresses.
+By breaking the data up into byte sized data. For example, an int could be 2 or 4 bytes with long int being 8 bytes. Since we know this it is possible to break up an int into 2 or 4 bytes these can then be accurately stored in the EEPROM in 2 or 4 memory addresses.
 
 **Upload your modified code that takes in analog values from your sensors and prints them back out to the Arduino Serial Monitor.**
 
@@ -271,7 +271,7 @@ The following is a picture of my completed state diagram
 The following is a link to a video of my data logger working:
 
 
-My data logger is a data logger for delivery trucks. The logger has 5 states and operates as a finitie state machine meaning it is always in one of these states. The first is an idle state this is when the truck is started but not moving from this you could go to either the moving state which means the truck is moving or to the delivery door open state which means the back door of the truck is open and deliveries is being made. From one of these states it is also possible to enter a hazardes state which is when the truck is moving and the delivery door is open. The final state is the state in which the manager can recall and look at the logged data as well as clear the data. The program starts if the truck is started loading the respective times from the EEPROM memory. The program then adds the time spent in each state as the truck is runing the program saves the new times to the EEPROM every time there is a state change. When the truck gets back to the depo the manager can recall the data seing how long the driver was busy with what and if there was a large amount of unecounted for idle time or if there was time that the truck was in the hazardes state. The manager can then clear the dataloger in preperations for the next trip of the truck.
+My data logger is a data logger for delivery trucks. The logger has 5 states and operates as a finite state machine meaning it is always in one of these states. The first is an idle state this is when the truck is started but not moving from this you could go to either the moving state which means the truck is moving or to the delivery door open state which means the back door of the truck is open and deliveries is being made. From one of these states it is also possible to enter a hazardous state which is when the truck is moving, and the delivery door is open. The final state is the state in which the manager can recall and look at the logged data as well as clear the data. The program starts if the truck is started loading the respective times from the EEPROM memory. The program then adds the time spent in each state as the truck is running the program saves the new times to the EEPROM every time there is a state change. When the truck gets back to the depo the manager can recall the data seeing how long the driver was busy with what and if there was a large amount of unaccounted for idle time or if there was time that the truck was in the hazardous state. The manager can then clear the datalogger in preparation for the next trip of the truck.
 
 The following is my code:
 ```
