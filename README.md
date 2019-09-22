@@ -262,7 +262,7 @@ You could use the put() function to save data across multiple data-bytes.
 **a. Insert here a copy of your final state diagram.**
 
 The following is a picture of my completed state diagram
-![](Images/States.jpg)
+![](Images/States1.jpg)
 
 ### 3. Create your data logger!
  
