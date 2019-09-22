@@ -253,7 +253,7 @@ For I2C we do not have the format of the data we will recieve. Because of the va
 
 **e. Alternately, how would we store the data if it were bigger than a byte? (hint: take a look at the [EEPROMPut](https://www.arduino.cc/en/Reference/EEPROMPut) example)**
 
-You could use the put() function to save data across multiple data-bytes. 
+By braeking the data up into byte sized data. For example an int could be 2 or 4 bytes with long int being 8 bytes. Since we know this it is possible to break up an int into 2 or 4 bytes these can then be accuratly stored in the EEPROM in 2 or 4 memory addresses.
 
 **Upload your modified code that takes in analog values from your sensors and prints them back out to the Arduino Serial Monitor.**
 
@@ -265,5 +265,242 @@ The following is a picture of my completed state diagram
 ![](Images/States1.jpg)
 
 ### 3. Create your data logger!
- 
+
 **a. Record and upload a short demo video of your logger in action.**
+
+The following is a link to a video of my data logger working:
+
+
+My data logger is a data logger for delivery trucks. The logger has 5 states and operates as a finitie state machine meaning it is always in one of these states. The first is an idle state this is when the truck is started but not moving from this you could go to either the moving state which means the truck is moving or to the delivery door open state which means the back door of the truck is open and deliveries is being made. From one of these states it is also possible to enter a hazardes state which is when the truck is moving and the delivery door is open. The final state is the state in which the manager can recall and look at the logged data as well as clear the data. The program starts if the truck is started loading the respective times from the EEPROM memory. The program then adds the time spent in each state as the truck is runing the program saves the new times to the EEPROM every time there is a state change. When the truck gets back to the depo the manager can recall the data seing how long the driver was busy with what and if there was a large amount of unecounted for idle time or if there was time that the truck was in the hazardes state. The manager can then clear the dataloger in preperations for the next trip of the truck.
+
+The following is my code:
+```
+#include <EEPROM.h>
+
+#define BTND_PIN 2
+#define BTNA_PIN 3
+#define BTNM_PIN 4
+
+#define LEDD_PIN 11
+#define LEDA_PIN 12
+
+int State = 0;
+
+long int TimeChange = 0;
+long int CurrentTime = 0;
+
+
+long int Times[] = {0, 0, 0, 0};
+int temp = 0;
+
+
+void setup() {
+  pinMode(BTND_PIN, INPUT);
+  pinMode(BTNA_PIN, INPUT);
+  pinMode(BTNM_PIN, INPUT);
+  pinMode(LEDD_PIN, OUTPUT);
+  pinMode(LEDA_PIN, OUTPUT);
+  Serial.begin(9600);
+  Times[0] = EEPROM_readlong(0);
+  Times[1] = EEPROM_readlong(9);
+  Times[2] = EEPROM_readlong(18);
+  Times[3] = EEPROM_readlong(27);
+
+}
+
+// Generic function to check if a button is pressed
+int buttonPressed(uint8_t button) {
+  static uint16_t lastStates = 0;
+  uint8_t state = digitalRead(button);
+  if (state != ((lastStates >> button) & 1)) {
+    lastStates ^= 1 << button;
+    return state == HIGH;
+  }
+  return false;
+}
+
+void EEPROM_writelong(int address, unsigned long value)
+{
+ //truncate upper part and write lower part into EEPROM
+ EEPROM_writeint(address+2, word(value));
+ //shift upper part down
+ value = value >> 16;
+ //truncate and write
+ EEPROM_writeint(address, word(value));
+}
+
+void EEPROM_writeint(int address, int value)
+{
+ EEPROM.write(address,highByte(value));
+ EEPROM.write(address+1 ,lowByte(value));
+}
+
+unsigned int EEPROM_readint(int address)
+{
+ unsigned int word = word(EEPROM.read(address), EEPROM.read(address+1));
+ return word;
+}
+
+unsigned long EEPROM_readlong(int address){
+ //use word read function for reading upper part
+ unsigned long dword = EEPROM_readint(address);
+ //shift read word up
+ dword = dword << 16;
+ // read lower word from EEPROM and OR it into double word
+ dword = dword | EEPROM_readint(address+2);
+ return dword;
+ }
+
+
+void loop() {
+  while(State == 0){
+    digitalWrite(LEDD_PIN, LOW);
+    digitalWrite(LEDA_PIN, LOW);
+    if(buttonPressed(BTND_PIN)) {
+      State = 1;
+      TimeChange = abs((0.001 * (millis() - CurrentTime)));
+      Times[0] = Times[0] + TimeChange;
+      CurrentTime = millis();
+      EEPROM_writelong(0, Times[0]);
+    }
+    if(buttonPressed(BTNA_PIN)) {
+      State = 2;
+      TimeChange = abs((0.001 * (millis() - CurrentTime)));
+      Times[0] = Times[0] + TimeChange;
+      CurrentTime = millis();
+      EEPROM_writelong(0, Times[0]);
+    }
+    if(buttonPressed(BTNM_PIN)){
+      State = 4;
+      TimeChange = abs((0.001 * (millis() - CurrentTime)));
+      Times[0] = Times[0] + TimeChange;
+      CurrentTime = millis();
+      EEPROM_writelong(0, Times[0]);
+    }       
+  }
+
+  
+  while(State == 1){
+    digitalWrite(LEDD_PIN, HIGH);
+    digitalWrite(LEDA_PIN, LOW);
+    if(buttonPressed(BTND_PIN)) {
+      State = 0;
+      TimeChange = abs((0.001 * (millis() - CurrentTime)));
+      Times[0] = Times[0] + TimeChange;
+      Times[1] = Times[1] + TimeChange;
+      CurrentTime = millis();
+      EEPROM_writelong(0, Times[0]);
+      EEPROM_writelong(9, Times[1]);
+    }
+    if(buttonPressed(BTNA_PIN)) {
+      State = 3;
+      TimeChange = abs((0.001 * (millis() - CurrentTime)));
+      Times[0] = Times[0] + TimeChange;
+      Times[1] = Times[1] + TimeChange;
+      CurrentTime = millis();
+      EEPROM_writelong(0, Times[0]);
+      EEPROM_writelong(9, Times[1]);
+    }
+    if(buttonPressed(BTNM_PIN)){
+      State = 4;
+      TimeChange = abs((0.001 * (millis() - CurrentTime)));
+      Times[0] = Times[0] + TimeChange;
+      Times[1] = Times[1] + TimeChange;
+      CurrentTime = millis();
+      EEPROM_writelong(0, Times[0]);
+      EEPROM_writelong(9, Times[1]);
+    }           
+  }
+  
+  while(State == 2){
+    digitalWrite(LEDA_PIN, HIGH);
+    digitalWrite(LEDD_PIN, LOW);
+    if(buttonPressed(BTND_PIN)) {
+      State = 3;
+      TimeChange = abs((0.001 * (millis() - CurrentTime)));
+      Times[0] = Times[0] + TimeChange;
+      Times[2] = Times[2] + TimeChange;
+      CurrentTime = millis();
+      EEPROM_writelong(0, Times[0]);
+      EEPROM_writelong(18, Times[2]);
+    }
+    if(buttonPressed(BTNA_PIN)) {
+      State = 0;
+      TimeChange = abs((0.001 * (millis() - CurrentTime)));
+      Times[0] = Times[0] + TimeChange;
+      Times[2] = Times[2] + TimeChange;
+      CurrentTime = millis();
+      EEPROM_writelong(0, Times[0]);
+      EEPROM_writelong(18, Times[2]);
+    }
+    if(buttonPressed(BTNM_PIN)){
+      State = 4;
+      TimeChange = abs((0.001 * (millis() - CurrentTime)));
+      Times[0] = Times[0] + TimeChange;
+      Times[2] = Times[2] + TimeChange;
+      CurrentTime = millis();
+      EEPROM_writelong(0, Times[0]);
+      EEPROM_writelong(18, Times[2]);
+    }
+  }
+    
+  while(State == 3){
+    digitalWrite(LEDA_PIN, HIGH);
+    digitalWrite(LEDD_PIN, HIGH);
+    if(buttonPressed(BTND_PIN)) {
+      State = 2;
+      TimeChange = abs((0.001 * (millis() - CurrentTime)));
+      Times[0] = Times[0] + TimeChange;
+      Times[3] = Times[3] + TimeChange;
+      CurrentTime = millis();
+      EEPROM_writelong(0, Times[0]);
+      EEPROM_writelong(27, Times[3]);
+    }
+    if(buttonPressed(BTNA_PIN)) {
+      State = 1;
+      TimeChange = abs((0.001 * (millis() - CurrentTime)));
+      Times[0] = Times[0] + TimeChange;
+      Times[3] = Times[3] + TimeChange;
+      CurrentTime = millis();
+      EEPROM_writelong(0, Times[0]);
+      EEPROM_writelong(27, Times[3]);
+    }
+    if(buttonPressed(BTNM_PIN)){
+      State = 4;
+      TimeChange = abs((0.001 * (millis() - CurrentTime)));
+      Times[0] = Times[0] + TimeChange;
+      Times[3] = Times[3] + TimeChange;
+      CurrentTime = millis();
+      EEPROM_writelong(0, Times[0]);
+      EEPROM_writelong(27, Times[3]);
+    }
+  }
+  
+  while(State == 4) {
+    if (temp ==0){
+      temp = 1;    
+      digitalWrite(LEDD_PIN, LOW);
+      digitalWrite(LEDA_PIN, LOW);
+      Serial.println("Total truck run time: " + String(Times[0]));
+      Serial.println("Total truck time moving: " + String(Times[1]));
+      Serial.println("Total truck time with door open: " + String(Times[2]));
+      Serial.println("Total truck time in hazard state: " + String(Times[3]));      
+    }
+    if(buttonPressed(BTNM_PIN)) {
+      Serial.println("Memory Reset");
+      State = 0; 
+      for (int i = 0 ; i < 36 ; i++) {
+        EEPROM.write(i, 0);
+      }
+      Times[0] = EEPROM_readlong(0);
+      Times[1] = EEPROM_readlong(9);
+      Times[2] = EEPROM_readlong(18);
+      Times[3] = EEPROM_readlong(27);
+      temp = 0;
+    } 
+
+    }
+}
+```
+ 
+
