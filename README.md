@@ -225,7 +225,7 @@ void setColor(int red, int green, int blue)
 }
 ```
 
-## Optional. Graphic Display
+## Graphic Display
 
 **Take a picture of your screen working insert it here!**
 
@@ -269,9 +269,9 @@ The following is a picture of my completed state diagram
 **a. Record and upload a short demo video of your logger in action.**
 
 The following is a link to a video of my data logger working:
-https://youtu.be/fjFXIrcaC1w
+https://youtu.be/fd4iewONFjs
 
-My data logger is a data logger for delivery trucks. The logger has 5 states and operates as a finite state machine meaning it is always in one of these states. The first is an idle state this is when the truck is started but not moving from this you could go to either the moving state which means the truck is moving or to the delivery door open state which means the back door of the truck is open and deliveries is being made. From one of these states it is also possible to enter a hazardous state which is when the truck is moving, and the delivery door is open. The final state is the state in which the manager can recall and look at the logged data as well as clear the data. The program starts if the truck is started loading the respective times from the EEPROM memory. The program then adds the time spent in each state as the truck is running the program saves the new times to the EEPROM every time there is a state change. When the truck gets back to the depo the manager can recall the data seeing how long the driver was busy with what and if there was a large amount of unaccounted for idle time or if there was time that the truck was in the hazardous state. The manager can then clear the datalogger in preparation for the next trip of the truck. The green LED indicates that the truck is in the moving state. The red LED indicates the truck has its delivery door open. When both LED's are on it means the truck is in a hazardous state because it is moving, and the door is open. Both LEDs being off just means the truck is idling.
+My data logger is a data logger for delivery trucks. The logger has 5 states and operates as a finite state machine meaning it is always in one of these states. The first is an idle state this is when the truck is started but not moving from this you could go to either the moving state which means the truck is moving or to the delivery door open state which means the back door of the truck is open and deliveries is being made. From one of these states it is also possible to enter a hazardous state which is when the truck is moving, and the delivery door is open. The final state is the state in which the manager can recall and look at the logged data as well as clear the data. The program starts if the truck is started loading the respective times from the EEPROM memory. The program then adds the time spent in each state as the truck is running the program saves the new times to the EEPROM every time there is a state change. When the truck gets back to the depo the manager can recall the data seeing how long the driver was busy with what and if there was a large amount of unaccounted for idle time or if there was time that the truck was in the hazardous state. The manager can then clear the datalogger in preparation for the next trip of the truck. The green LED indicates that the truck is in the moving state. The red LED indicates the truck has its delivery door open. When both LED's are on it means the truck is in a hazardous state because it is moving, and the door is open. Both LEDs being off just means the truck is idling. I also added a photo cell to the instument that records light intensity when the trucks back door is open this is to monitor light exposure of the goods in the back of the truck. This analog value is also recorded and saved to EEPROM.
 
 The following is my code:
 ```
@@ -290,7 +290,7 @@ long int TimeChange = 0;
 long int CurrentTime = 0;
 
 
-long int Times[] = {0, 0, 0, 0};
+long int Times[] = {0, 0, 0, 0, 0};
 int temp = 0;
 
 
@@ -305,6 +305,7 @@ void setup() {
   Times[1] = EEPROM_readlong(9);
   Times[2] = EEPROM_readlong(18);
   Times[3] = EEPROM_readlong(27);
+  Times[4] = EEPROM_readlong(36);
 
 }
 
@@ -423,6 +424,8 @@ void loop() {
       CurrentTime = millis();
       EEPROM_writelong(0, Times[0]);
       EEPROM_writelong(18, Times[2]);
+      Times[4] = Times[4] + analogRead(A0);
+      EEPROM_writelong(36, Times[4]);
     }
     if(buttonPressed(BTNA_PIN)) {
       State = 0;
@@ -432,6 +435,8 @@ void loop() {
       CurrentTime = millis();
       EEPROM_writelong(0, Times[0]);
       EEPROM_writelong(18, Times[2]);
+      Times[4] = Times[4] + analogRead(A0);
+      EEPROM_writelong(36, Times[4]);      
     }
     if(buttonPressed(BTNM_PIN)){
       State = 4;
@@ -441,6 +446,8 @@ void loop() {
       CurrentTime = millis();
       EEPROM_writelong(0, Times[0]);
       EEPROM_writelong(18, Times[2]);
+      Times[4] = Times[4] + analogRead(A0);
+      EEPROM_writelong(36, Times[4]);      
     }
   }
     
@@ -484,22 +491,30 @@ void loop() {
       Serial.println("Total truck run time: " + String(Times[0]));
       Serial.println("Total truck time moving: " + String(Times[1]));
       Serial.println("Total truck time with door open: " + String(Times[2]));
-      Serial.println("Total truck time in hazard state: " + String(Times[3]));      
+      Serial.println("Total truck time in hazard state: " + String(Times[3]));
+      Serial.println("The total amount of light exposure The products got: " + String(Times[4]));        
     }
     if(buttonPressed(BTNM_PIN)) {
       Serial.println("Memory Reset");
       State = 0; 
-      for (int i = 0 ; i < 36 ; i++) {
+      for (int i = 0 ; i < 45 ; i++) {
         EEPROM.write(i, 0);
       }
       Times[0] = EEPROM_readlong(0);
       Times[1] = EEPROM_readlong(9);
       Times[2] = EEPROM_readlong(18);
       Times[3] = EEPROM_readlong(27);
+      Times[3] = EEPROM_readlong(36);
       temp = 0;
     } 
 
     }
+
+   
+  
+
+  
+
 }
 ```
  
